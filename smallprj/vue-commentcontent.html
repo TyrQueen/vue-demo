@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/vue/2.1.6/vue.min.js"></script>
+    <style>
+        body,
+        html,
+        div,
+        p,
+        li,
+        ul,
+        button,
+        input,
+        h1,
+        h4 {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            font-family: "微软雅黑";
+        }
+
+        .rightBox {
+            background: #fff;
+            padding-bottom: 2em;
+            padding-top: 5px;
+        }
+
+
+        .time {
+            text-align: right;
+            margin-top: 1em;
+            color: #333;
+        }
+
+
+        .commentBox {
+            margin: 20px;
+        }
+
+        .commentBox h3 {
+            color: #634322;
+            background: #e9e5df;
+            padding: 8px 15px;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .noComment {
+            display: none;
+        }
+
+        .comment {
+            margin-bottom: 15px;
+        }
+
+        .comment+.comment,
+        .reply+.reply {
+            border-top: 1px solid #ccc;
+        }
+
+        .comment b {
+            color: #01553D;
+            font-size: 16px;
+            display: block;
+            margin: 5px 0;
+        }
+
+        .comment b span {
+            color: #333;
+            font-size: 14px;
+            margin-left: 20px;
+        }
+
+        .comment p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .commentBox textarea {
+            overflow: auto;
+            width: 100%;
+            height: 95px;
+            outline: none;
+            resize: none;
+        }
+
+        .commentBox button {
+            float: right;
+            margin-left: 20px;
+            padding: 5px 30px;
+            background: #01553D;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .commentBox button:hover {
+            color: #fff;
+            background: #047857
+        }
+
+        .reply {
+            margin: 15px 0 15px 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="rightBox" id="comment">
+
+        <comment-content v-bind:comment="comment" v-on:change="changCommmer"></comment-content>
+
+        <comment-textarea v-bind:name="oldComment" v-on:submit="addComment"></comment-textarea>
+    </div>
+
+
+    <script>
+        
+Vue.component('comment-content',{
+	template:'\
+	<div class="commentBox">\
+		<h3>评论</h3>\
+		<p v-if="comment.length==0"></p>\
+		<div v-else>\
+			<div class="comment" v-for="(item,index) in comment" v-bind:index="index" >\
+				<b>{{item.name}}<span>{{item.time}}</span></b>\
+				<p>{{item.content}}</p>\
+					<div class="reply" v-for="reply in item.reply">\
+					</div>\
+				</div>\
+			</div>\
+		</div>\
+	</div>',
+	props: ['comment']
+});
+
+Vue.component('commentTextarea',{
+	template:'\
+	<div class="commentBox">\
+		<h3>发表评论</h3>\
+		<textarea name="" value="请填写评论内容" v-model="commentText"></textarea>\
+		<button class="btn" @click="addComment">发表</button>\
+	</div>',
+	props: ['name'],
+	data: function(){
+		return {commentText:""}
+	},
+	methods: {
+		addComment: function() {
+			this.$emit("submit",this.commentText);
+			this.commentText = "";
+		}
+	}
+});
+
+var comment = new Vue({
+	el: "#comment",
+	data: {
+		commenter: "Silver",   //评论人
+		
+		oldComment: null,
+		comment: [
+			{
+				name: "Silver",
+				time: "2017-12-27 00:00:20",
+				content: "111",
+			
+			},
+			{
+				name: "Black",
+				time: "2017-12-27 00:20:00",
+				content: "222",
+			
+			}
+		]
+	},
+	methods: {
+		addComment: function(data) {
+		
+				this.comment.push({
+					name: 'Silver',
+					time: getTime(),
+					content: data,
+				
+				});	
+			
+		},
+
+		changCommmer: function(name,index) {
+			this.oldComment = name;
+			this.chosedIndex = index;
+		}
+	}
+})
+
+
+//格式化时间
+function getTime() {
+	var now = new Date();
+	var year = now.getFullYear();
+	var month = now.getMonth()+1;
+	var day = now.getDate();
+    var hour = now.getHours();
+    var min = now.getMinutes();
+    var sec = now.getSeconds();
+	month.length < 2 ?  "0" + month : month;
+	day.length < 2 ?  "0" + day : day;
+    hour.length < 2 ?  "0" + hour : hour;
+    min.length < 2 ?  "0" + min : min;
+    sec.length < 2 ?  "0" + sec : sec;
+	return year+"-"+month+"-"+day+" "+hour+":"+min+":"+sec;
+}
+    </script>
+
+</body>
+
+</html>

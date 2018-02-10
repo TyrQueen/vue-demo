@@ -73,8 +73,11 @@ socket.onerror = function(evt) {
 socket.onclose = function(evt) {
     console.log("WebSocket closed.");
 };
-
 ```
+运行结果：
+
+![WebSocketConsole](https://tyrqueen.github.io/vue-demo/WebSocketConsle.png)
+
 ---
 ## NodeJS服务器端选修
 1. 如果是类似午安网这种基于Access-Token的身份认证架构，怎么实现用户连接Websocket服务器的时候服务器能识别出接入的用户是谁？
